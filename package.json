@@ -1,0 +1,43 @@
+{
+	"name": "creditrecovery",
+	"version": "1.0.0",
+	"description": "Aplicação para verificar falhas nos pagamentos de impostos e indicar possíveis recuperações de crédito.",
+	"main": "index.js",
+	"scripts": {
+		"eslint": "./node_modules/.bin/eslint ./src/**/*.js",
+		"start": "node ./dist/bin/",
+		"start:dev": "node ./src/bin/",
+		"start:watch": "nodemon ./src/bin/",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/tsortbr/CreditRecovery.git"
+	},
+	"keywords": [
+		"credit",
+		"recovery",
+		"notafiscal"
+	],
+	"author": "TSort - Tecnologia em Ordem <ramyres90@gmail.com>",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/tsortbr/CreditRecovery/issues"
+	},
+	"homepage": "https://github.com/tsortbr/CreditRecovery#readme",
+	"dependencies": {
+		"cookie-parser": "~1.4.4",
+		"debug": "~2.6.9",
+		"express": "~4.16.1",
+		"http-errors": "~1.6.3",
+		"mongoose": "^5.6.5",
+		"morgan": "~1.9.1",
+		"multer": "^1.4.2",
+		"pug": "2.0.0-beta11"
+	},
+	"devDependencies": {
+		"eslint": "^6.0.1",
+		"gulp": "^4.0.2",
+		"nodemon": "^1.19.1"
+	}
+}
