@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    h1 Upload Notas
+    .row
+        .col-md-6.col-sm-12
+            .custom-file.mt-5
+                form(action="/upload" method="post" enctype="multipart/form-data" required)#formFiles
+                    input.custom-file-input(type="file" accept="text/xml" multiple name='notes')#inputFiles
+                    label.custom-file-label(for="inputFiles") Choose file
+        .col-md-6.col-sm-12
+            .card.text-dark.mt-5
+                .card-header.p-1
+                    span Files
+                .card-body.p-1
+                    .div#divFilesList
+                        p.text-center.text-secondary.my-5 NO FILES
+                .card-footer.p-1
+                    .row
+                        .col
+                            button.btn.btn-lg.btn-secondary.disabled(type="button")#btnClean Limpar
+                        .col.text-right
+                            button.btn.btn-lg.btn-primary.disabled(type="button")#btnSend Enviar                    
+    //-View-Controller
+    script(src="/js/upload-script.js")

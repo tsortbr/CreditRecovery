@@ -61,7 +61,8 @@ typings/
 .next
 
 # Project
-./dist
-./database
+dist/
+database/
 package-lock.json
 .env
+xmlfiles/
