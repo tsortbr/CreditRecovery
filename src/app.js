@@ -7,8 +7,7 @@ const dotenv = require('dotenv');
 
 dotenv.config();//process.env.DB_...
 
-// require('./config/database-config').testConnection();
-// require('./model/user-model').sync({force:true});
+// require('./config/database-config').initDatabase(true);
 
 const indexRouter = require('./routes/index-router');
 const uploadRouter = require('./routes/upload-router');

@@ -18,7 +18,7 @@ if (DB_DIALECT == 'sqlite') {
     const dataPath = path.join(rootPath, DB_PATH);
     try {
         fs.mkdirSync(path.dirname(dataPath), { recursive: true });
-    } catch (error) {};
+    } catch (error) { };
 
     sequelize = new Sequelize({
         dialect: DB_DIALECT,
@@ -46,7 +46,17 @@ function testConnection() {
         });
 }
 
+function initDatabase(force = false) {
+    require('../model/user-model').sync({ force: force });
+    require('../model/client-model').sync({ force: force }).then(()=>{
+        require('../model/note-model').sync({ force: force }).then(()=>{
+            require('../model/product-model').sync({ force: force });
+        });
+    });
+}
+
 module.exports = {
     sequelize: sequelize,
-    testConnection: testConnection
+    testConnection: testConnection,
+    initDatabase: initDatabase
 };
