@@ -62,4 +62,6 @@ typings/
 
 # Project
 ./dist
+./database
 package-lock.json
+.env
