@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/',uploader.array('notes'), NotesController.processNotesMiddleware ,(req, res, next)  => {
-  res.redirect('/');
+  res.redirect('/upload');
 });
 
 module.exports = router;
