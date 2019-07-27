@@ -136,7 +136,7 @@ Note.init({
         type: Sequelize.FLOAT
     },
     infAdic_infCpl: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT('medium')
     },
 }, {
         sequelize,
