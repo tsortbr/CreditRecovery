@@ -12,6 +12,9 @@ require('./config/database-config').initDatabase();
 
 const indexRouter = require('./routes/index-router');
 const uploadRouter = require('./routes/upload-router');
+const profileRouter = require('./routes/profile-router');
+const clientsRouter = require('./routes/clients-router');
+const paramsRouter = require('./routes/params-router');
 const apiRouter = require('./routes/api-router');
 
 const app = express();
@@ -29,6 +32,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/upload', uploadRouter);
+app.use('/profile', profileRouter);
+app.use('/clients', clientsRouter);
+app.use('/params', paramsRouter);
 app.use('/api', apiRouter);
 
 
