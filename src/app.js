@@ -8,10 +8,11 @@ const dotenv = require('dotenv');
 dotenv.config();//process.env.DB_...
 console.log(process.env.DB_PATH);
 
-require('./config/database-config').initDatabase(true);
+require('./config/database-config').initDatabase();
 
 const indexRouter = require('./routes/index-router');
 const uploadRouter = require('./routes/upload-router');
+const apiRouter = require('./routes/api-router');
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/upload', uploadRouter);
+app.use('/api', apiRouter);
 
 
 // catch 404 and forward to error handler
