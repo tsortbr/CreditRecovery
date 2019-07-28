@@ -55,16 +55,16 @@ class NotesController {
             _self.client = _self.extractClientObj(obj);
             _self.note = _self.extractNoteObj(obj);
             _self.products = _self.extractProductArray(obj);
-
             return ClientModel.findOrCreate({ where: { CNPJ: _self.client.CNPJ }, defaults: _self.client })
                 .then(nCli => {
-                    _self.note.clientId = nCli.id;
+                    _self.note.clientId = nCli[0].id;
                     return NoteModel.findOrCreate({ where: { id: _self.note.id }, defaults: _self.note });
                 })
                 .then(nNote => {
-                    if (_self.products.length = 0) return;
-                    // return ProductModel.findOrCreate();
-                    return null;
+                    for (let index = 0; index < _self.products.length; index++) {
+                        _self.products[index].noteId = nNote[0].id;
+                        ProductModel.create(_self.products[index]);
+                    }
                 })
                 .then(() => {
                     return true;
@@ -73,13 +73,6 @@ class NotesController {
                     console.log(err);
                     return false;
                 });
-            // if (mod == '55') {
-
-            // } else if (mod == '65') {
-
-            // } else {
-            //     throw new Error('Modelo de Nota Invalido!');
-            // }
         });
     }
 
@@ -158,20 +151,187 @@ class NotesController {
     }
 
     extractProductArray(obj) {
-        let arr = [];
+        let products = [];
+        let productModel = [];
+        let mod = obj.nfeProc.NFe.infNFe.ide.mod;
 
-        return arr;
+        if (this.haveManyProducts(obj.nfeProc.NFe.infNFe.det)) {
+            products = obj.nfeProc.NFe.infNFe.det.array;
+        } else {
+            products.push(obj.nfeProc.NFe.infNFe.det)
+        }
+
+        for (let index = 0; index < products.length; index++) {
+            let productItemXml = products[index];
+            let product = this.productToModel(productItemXml);
+            product = this.taxationICMSCod(productItemXml.imposto.ICMS, product);
+            if (mod == 55) {
+                product = this.fieldOnlyMod55(productItemXml, product);
+            } else {
+                product = this.fieldOnlyMod65(productItemXml, product);
+            }
+            productModel.push(product);
+        }
+        return productModel;
     }
 
+    haveManyProducts(obj) {
+        if (obj.array != undefined) {
+            return true;
+        }
+        return false;
+    }
+
+    taxationICMSCod(impostoICMS, product) {
+        if (this.isICMS00(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS00, product);
+        } else if (this.isICMS10(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS10, product);
+        } else if (this.isICMS20(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS20, product);
+        } else if (this.isICMS30(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS30, product);
+        } else if (this.isICMS40(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS40, product);
+        } else if (this.isICMS41(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS41, product);
+        } else if (this.isICMS50(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS50, product);
+        } else if (this.isICMS51(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS51, product);
+        } else if (this.isICMS60(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS60, product);
+        } else if (this.isICMS70(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS70, product);
+        } else if (this.isICMS90(impostoICMS)) {
+            return this.extractICMS(impostoICMS.ICMS90, product);
+        }
+    }
+
+    isICMS00(ICMS) {
+        if (ICMS.ICMS00 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS10(ICMS) {
+        if (ICMS.ICMS10 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS20(ICMS) {
+        if (ICMS.ICMS20 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS30(ICMS) {
+        if (ICMS.ICMS30 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS40(ICMS) {
+        if (ICMS.ICMS40 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS41(ICMS) {
+        if (ICMS.ICMS41 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS50(ICMS) {
+        if (ICMS.ICMS50 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS51(ICMS) {
+        if (ICMS.ICMS51 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS60(ICMS) {
+        if (ICMS.ICMS60 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS70(ICMS) {
+        if (ICMS.ICMS70 != undefined) {
+            return true;
+        }
+    }
+
+    isICMS90(ICMS) {
+        if (ICMS.ICMS90 != undefined) {
+            return true;
+        }
+    }
+
+    extractICMS(ICMS, product) {
+        product.imposto_ICMS_orig = this.normalizeValue(ICMS.orig);
+        product.imposto_ICMS_CST = this.normalizeValue(ICMS.CST);
+        product.imposto_ICMS_modBC = this.normalizeValue(ICMS.modBC);
+        product.imposto_ICMS_vBC = this.normalizeValue(ICMS.vBC);
+        product.imposto_ICMS_pICMS = this.normalizeValue(ICMS.pICMS);
+        product.imposto_ICMS_vICMS = this.normalizeValue(ICMS.vICMS);
+        return product;
+    }
+
+    productToModel(productItemXml) {
+        return {
+            nItem: this.normalizeValue(productItemXml.attributes().nItem),
+            cProd: this.normalizeValue(productItemXml.prod.cProd),
+            cEAN: this.normalizeValue(productItemXml.prod.cEAN),
+            xProd: this.normalizeValue(productItemXml.prod.xProd),
+            NCM: this.normalizeValue(productItemXml.prod.NCM),
+            EXTIPI: this.normalizeValue(productItemXml.prod.EXTIPI),
+            CFOP: this.normalizeValue(productItemXml.prod.CFOP),
+            uCom: this.normalizeValue(productItemXml.prod.uCom),
+            qCom: this.normalizeValue(productItemXml.prod.qCom),
+            vUnCom: this.normalizeValue(productItemXml.prod.vUnCom),
+            vProd: this.normalizeValue(productItemXml.prod.vProd),
+            cEANTrib: this.normalizeValue(productItemXml.prod.cEANTrib),
+            uTrib: this.normalizeValue(productItemXml.prod.uTrib),
+            qTrib: this.normalizeValue(productItemXml.prod.qTrib),
+            vUnTrib: this.normalizeValue(productItemXml.prod.vUnTrib),
+            indTot: this.normalizeValue(productItemXml.prod.indTot),
+
+            /**
+             * Não encontrado nos produtos
+             * imposto_ICMS_pRedBC: this.normalizeValue(obj.prod.imposto.ICMS.ICMS00),             
+             */
+        }
+    }
+
+    fieldOnlyMod55(productItemXml, product) {
+        product.imposto_PIS_CST = this.normalizeValue(productItemXml.prod.imposto.PIS.PISAliq.CST);
+        product.imposto_PIS_vBC = this.normalizeValue(productItemXml.prod.imposto.PIS.PISAliq.vBC);
+        product.imposto_PIS_pPIS = this.normalizeValue(productItemXml.prod.imposto.PIS.PISAliq.pPIS);
+        product.imposto_PIS_vPIS = this.normalizeValue(productItemXml.prod.imposto.PIS.PISAliq.vPIS);
+        product.imposto_COFINS_CST = this.normalizeValue(productItemXml.prod.imposto.COFINS.COFINSAliq.CST);
+        product.imposto_COFINS_vBC = this.normalizeValue(productItemXml.prod.imposto.COFINS.COFINSAliq.vBC);
+        product.imposto_COFINS_pCOFINS = this.normalizeValue(productItemXml.prod.imposto.COFINS.COFINSAliq.pCOFINS);
+        product.imposto_COFINS_vCOFINS = this.normalizeValue(productItemXml.prod.imposto.COFINS.COFINSAliq.vCOFINS);
+        return product;
+    }
+
+    fieldOnlyMod65(productItemXml, product) {
+        product.CEST = this.normalizeValue(productItemXml.prod.CEST);
+        return product;
+    }
 
     normalizeValue(value) {
         if (!value) return null;
         if (typeof value == 'string' || typeof value == 'number')
             return value;
         if (!!value.text) return value.text();
-
-        console.log(value);
-
         return null;
     }
 

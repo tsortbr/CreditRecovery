@@ -4,6 +4,9 @@ const Note = require('./note-model');
 
 class Product extends Sequelize.Model { }
 Product.init({
+    nItem: {
+        type: Sequelize.INTEGER
+    },
     cProd: {
         type: Sequelize.STRING
     },
