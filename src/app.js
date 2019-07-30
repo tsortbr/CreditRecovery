@@ -6,7 +6,6 @@ const logger = require('morgan');
 const dotenv = require('dotenv');
 
 dotenv.config();//process.env.DB_...
-console.log(process.env.DB_PATH);
 
 require('./config/database-config').initDatabase();
 

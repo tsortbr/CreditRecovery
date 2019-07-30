@@ -16,7 +16,7 @@ router.get('/v1/clients', (req, res) => {
 });
 
 router.get('/v1/clients/:cnpj', (req, res) => {
-    ClientModel.findAll({})
+    ClientModel.findOne({ where: { CNPJ: req.params.cnpj } })
         .then(result => {
             res.json(result).end(200);
         })
@@ -26,7 +26,7 @@ router.get('/v1/clients/:cnpj', (req, res) => {
 });
 
 router.get('/v1/notes', (req, res) => {
-    NoteModel.findAll({})
+    NoteModel.findAndCountAll({})
         .then(result => {
             res.json(result).end(200);
         })
@@ -36,7 +36,7 @@ router.get('/v1/notes', (req, res) => {
 });
 
 router.get('/v1/notes/:id', (req, res) => {
-    NoteModel.findAll({})
+    NoteModel.findOne({ where: { id: req.params.id } })
         .then(result => {
             res.json(result).end(200);
         })
@@ -46,7 +46,7 @@ router.get('/v1/notes/:id', (req, res) => {
 });
 
 router.get('/v1/notes/client/:id', (req, res) => {
-    NoteModel.findAll({})
+    NoteModel.findAndCountAll({ where: { clientId: req.params.id } })
         .then(result => {
             res.json(result).end(200);
         })
@@ -55,10 +55,8 @@ router.get('/v1/notes/client/:id', (req, res) => {
         });
 });
 
-
-
 router.get('/v1/products', (req, res) => {
-    ProductModel.findAll({})
+    ProductModel.findAndCountAll({})
         .then(result => {
             res.json(result).end(200);
         })
@@ -68,7 +66,7 @@ router.get('/v1/products', (req, res) => {
 });
 
 router.get('/v1/products/note/:id', (req, res) => {
-    ProductModel.findAll({})
+    ProductModel.findAndCountAll({ where: { noteId: req.params.id } })
         .then(result => {
             res.json(result).end(200);
         })
@@ -76,7 +74,5 @@ router.get('/v1/products/note/:id', (req, res) => {
             res.json({ error: err }).end(500);
         });
 });
-
-
 
 module.exports = router;
