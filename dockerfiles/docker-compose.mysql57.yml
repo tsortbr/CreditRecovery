@@ -1,0 +1,15 @@
+# By: Ramyres Aquino
+# Dt: 30/07/2019
+# Ref: https://dev.mysql.com/doc/refman/8.0/en/linux-installation-docker.html
+# Ref: https://docs.docker.com/compose/reference/overview/
+version: '3'
+services:
+  mysql1:
+    image: mysql/mysql-server:5.7
+    ports: 
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=recover_credit
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=qwe123
+     

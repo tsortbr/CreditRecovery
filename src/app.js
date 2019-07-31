@@ -32,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/upload', uploadRouter);
 app.use('/profile', profileRouter);
-app.use('/clients', clientsRouter);
+app.use('/clients?', clientsRouter);
 app.use('/params', paramsRouter);
 app.use('/api', apiRouter);
 
