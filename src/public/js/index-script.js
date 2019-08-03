@@ -1,11 +1,11 @@
-function prepareClients(){
+function prepareClients() {
     const clientListElement = document.querySelector('#clients-list');
-    
-    function addClient(client){
+
+    function addClient(client) {
         console.log(client);
         const ele = document.createElement('a');
-        ele.classList.add('list-group-item','list-group-item-action');
-        ele.href = `/clients/${client.id}`;
+        ele.classList.add('list-group-item', 'list-group-item-action');
+        ele.href = `/clients/${client.CNPJ}`;
         ele.innerHTML = `
         <div class="d-flex w-100 justify-content-between">
             <h5 class="mb-1">${client.xNome}</h5>
@@ -18,22 +18,30 @@ function prepareClients(){
         `;
         clientListElement.appendChild(ele);
     }
-    
 
-    function show(arr){
+
+    function show(arr) {
+        if (arr.length == 0) {
+            const ele = document.createElement('a');
+            ele.classList.add('list-group-item');
+            ele.href = '/';
+            ele.innerHTML = '<p class="text-center text-secondary">Nenhum cliente encontrado</p>';
+            clientListElement.appendChild(ele);
+            return;
+        }
         for (const client of arr) {
-            addClient(client);        
+            addClient(client);
         }
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.onload = () =>{
-        if(xhr.DONE && xhr.status == 200){
+    xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
             const arr = JSON.parse(xhr.responseText);
             show(arr);
         }
     };
-    xhr.open('GET','/api/v1/clients');
+    xhr.open('GET', '/api/v1/clients');
     xhr.send();
 }
 
