@@ -35,6 +35,16 @@ router.get('/v1/notes', (req, res) => {
         });
 });
 
+router.get('/v1/notes/client/:id', (req, res) => {
+    NoteModel.findAndCountAll({ where: { clientId: req.params.id } })
+        .then(result => {
+            res.json(result).end(200);
+        })
+        .catch(err => {
+            res.json({ error: err }).end(500);
+        });
+});
+
 router.get('/v1/notes/:id', (req, res) => {
     NoteModel.findOne({ where: { id: req.params.id } })
         .then(result => {
@@ -45,15 +55,6 @@ router.get('/v1/notes/:id', (req, res) => {
         });
 });
 
-router.get('/v1/notes/client/:id', (req, res) => {
-    NoteModel.findAndCountAll({ where: { clientId: req.params.id } })
-        .then(result => {
-            res.json(result).end(200);
-        })
-        .catch(err => {
-            res.json({ error: err }).end(500);
-        });
-});
 
 router.get('/v1/products', (req, res) => {
     ProductModel.findAndCountAll({})

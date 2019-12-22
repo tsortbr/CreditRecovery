@@ -2,6 +2,7 @@
 # Dt: 30/07/2019
 # Ref: https://dev.mysql.com/doc/refman/8.0/en/linux-installation-docker.html
 # Ref: https://docs.docker.com/compose/reference/overview/
+# RUN: sudo docker-compose -f docker-compose.mysql57.yml up -d
 version: '3'
 services:
   mysql1:
